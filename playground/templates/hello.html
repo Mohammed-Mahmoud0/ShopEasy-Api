@@ -5,10 +5,8 @@
     {% else %}
     <h1>hello, world</h1>
     {% endif %}
-    <ul>
-      {% for product in products %}
-      <li>{{ product.placed_at }} - {{ product.customer.first_name }}</li>
-      {% endfor %}
-    </ul>
+    {% for item in result %}
+    <p>{{ item.first_name }} $ {{ item.num_orders }}</p>
+    {% endfor %}
   </body>
 </html>
