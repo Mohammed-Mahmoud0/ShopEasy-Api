@@ -12,6 +12,12 @@ class Collection(models.Model):
         "Product", on_delete=models.SET_NULL, null=True, related_name="+"
     )
 
+    def __str__(self) -> str:
+        return self.title
+
+    class Meta:
+        ordering = ["title"]
+
 
 class Product(models.Model):
     title = models.CharField(max_length=255)
@@ -22,6 +28,12 @@ class Product(models.Model):
     last_update = models.DateTimeField(auto_now=False)
     collection = models.ForeignKey(Collection, on_delete=models.PROTECT)
     promotions = models.ManyToManyField(Promotion)
+
+    def __str__(self) -> str:
+        return self.title
+
+    class Meta:
+        ordering = ["title"]
 
 
 class Customer(models.Model):
@@ -41,6 +53,12 @@ class Customer(models.Model):
     membership = models.CharField(
         max_length=1, choices=MEMBERSHIP_CHOICES, default=MEMBERSHIP_BRONZE
     )
+
+    def __str__(self) -> str:
+        return f"{self.first_name} {self.last_name}"
+
+    class Meta:
+        ordering = ["first_name", "last_name"]
 
 
 class Order(models.Model):
