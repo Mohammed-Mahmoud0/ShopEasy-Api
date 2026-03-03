@@ -1,5 +1,6 @@
 from django.db.models import Count
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.serializers import BaseSerializer
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework.mixins import (
     CreateModelMixin,
@@ -68,7 +69,14 @@ class CartViewSet(
 
 
 class CartItemViewSet(ModelViewSet):
-    serializer_class = CartItemSerializer
+    def get_serializer_class(self) -> type[BaseSerializer]:
+        if self.request.method == "POST":
+            return AddCartItemSerializer
+        else:
+            return CartItemSerializer
+
+    def get_serializer_context(self):
+        return {"cart_id": self.kwargs["cart_pk"]}
 
     def get_queryset(self):
         return CartItem.objects.filter(cart_id=self.kwargs["cart_pk"]).select_related(
