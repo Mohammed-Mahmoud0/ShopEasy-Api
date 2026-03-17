@@ -1,9 +1,7 @@
 from math import perm
-
 from django.db import models
 from django.core.validators import MinValueValidator
 from uuid import uuid4
-
 from config import settings
 
 
