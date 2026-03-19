@@ -1,3 +1,5 @@
+from collections.abc import Sequence
+
 from django.db.models import Count
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.serializers import BaseSerializer
@@ -11,6 +13,7 @@ from rest_framework.mixins import (
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.filters import SearchFilter, OrderingFilter
 from store.pagination import DefaultPagination
 from .filters import ProductFilter
@@ -95,6 +98,9 @@ class CustomerViewSet(
 ):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
+    permission_classes = [IsAuthenticated]
+
+    
 
     @action(detail=False, methods=["GET", "PUT"])  # type: ignore
     def me(self, request):
