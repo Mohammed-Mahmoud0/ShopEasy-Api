@@ -3,6 +3,7 @@ from django.db import models
 from django.core.validators import MinValueValidator
 from uuid import uuid4
 from config import settings
+from store import permissions
 
 
 class Promotion(models.Model):
@@ -77,6 +78,9 @@ class Customer(models.Model):
 
     class Meta:
         ordering = ["user__first_name", "user__last_name"]
+        permissions = [
+            ("view_history", "Can view order history"),
+        ]
 
 
 class Order(models.Model):
