@@ -1,6 +1,8 @@
 from collections.abc import Sequence
+from typing import Any
 
 from django.db.models import Count
+from django.db.models.query import QuerySet
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.serializers import BaseSerializer
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
@@ -22,7 +24,11 @@ from rest_framework.permissions import (
 )
 from rest_framework.filters import SearchFilter, OrderingFilter
 from store.pagination import DefaultPagination
-from store.permissions import FullDjangoModelPermissions, IsAdminOrReadOnly, ViewCustomerHistoryPermission
+from store.permissions import (
+    FullDjangoModelPermissions,
+    IsAdminOrReadOnly,
+    ViewCustomerHistoryPermission,
+)
 from .filters import ProductFilter
 from .models import *
 from .serializers import *
@@ -120,8 +126,33 @@ class CustomerViewSet(ModelViewSet):
             serializer = CustomerSerializer(customer)
             return Response(serializer.data)
         elif request.method == "PUT":
-            customer = Customer.objects.get(user_id=request.user.id)
-            serializer = CustomerSerializer(customer, data=request.data)
+            customer, created = Customer.objects.get_or_create(user_id=request.user.id)
+            serializer = CustomerSerializer(customer, data=request.data, partial=True)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data)
+
+
+class OrderViewSet(ModelViewSet):
+    permission_classes = [IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        serializer = CreateOrderSerializer(data=request.data, context={"user_id": request.user.id})  # type: ignore
+        serializer.is_valid(raise_exception=True)
+        order = serializer.save()
+        serializer = OrderSerializer(order)
+        return Response(serializer.data)
+
+    def get_serializer_class(self):
+        if self.request.method == "POST":
+            return CreateOrderSerializer
+        return OrderSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+
+        if user.is_staff:  # type: ignore
+            return Order.objects.all()
+
+        customer, created = Customer.objects.get_or_create(user_id=user.id)  # type: ignore
+        return Order.objects.filter(customer_id=customer.id)  # type: ignore
