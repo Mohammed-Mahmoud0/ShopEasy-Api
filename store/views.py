@@ -121,13 +121,11 @@ class CustomerViewSet(ModelViewSet):
     @action(detail=False, methods=["GET", "PUT"], permission_classes=[IsAuthenticated])  # type: ignore
     def me(self, request):
         if request.method == "GET":
-            (customer, created) = Customer.objects.get_or_create(
-                user_id=request.user.id
-            )
+            customer = Customer.objects.get(user_id=request.user.id)
             serializer = CustomerSerializer(customer)
             return Response(serializer.data)
         elif request.method == "PUT":
-            customer, created = Customer.objects.get_or_create(user_id=request.user.id)
+            customer = Customer.objects.get(user_id=request.user.id)
             serializer = CustomerSerializer(customer, data=request.data, partial=True)
             serializer.is_valid(raise_exception=True)
             serializer.save()
@@ -135,7 +133,7 @@ class CustomerViewSet(ModelViewSet):
 
 
 class OrderViewSet(ModelViewSet):
-    http_method_names = ["get", "patch", "delete", "head", "options"]
+    http_method_names = ["get", "post", "patch", "delete", "head", "options"]
 
     def get_permissions(self):
         if self.request.method in ["PATCH", "DELETE"]:
@@ -162,5 +160,5 @@ class OrderViewSet(ModelViewSet):
         if user.is_staff:  # type: ignore
             return Order.objects.all()
 
-        customer, created = Customer.objects.get_or_create(user_id=user.id)  # type: ignore
+        customer = Customer.objects.get(user_id=user.id)  # type: ignore
         return Order.objects.filter(customer_id=customer.id)  # type: ignore
