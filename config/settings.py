@@ -80,7 +80,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "shopeasy",
+        "NAME": "shopeasy2",
         "HOST": "localhost",
         "USER": "root",
         "PASSWORD": "0000",
