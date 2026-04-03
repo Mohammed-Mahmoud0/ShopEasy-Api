@@ -1,6 +1,7 @@
 from datetime import timedelta
 import os
 from pathlib import Path
+from unittest.mock import DEFAULT
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -156,3 +157,12 @@ DJOSER = {
         "current_user": "core.serializers.UserSerializer",
     }
 }
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "localhost"
+EMAIL_HOST_USER = ""
+EMAIL_HOST_PASSWORD = ""
+EMAIL_PORT = 2525
+DEFAULT_FROM_EMAIL = "from@shopeasy.com"
+
+ADMINS = [("Admin", "admin@shopeasy.com")]
