@@ -1,9 +1,4 @@
-from collections.abc import Sequence
-from math import e
-from typing import Any
-
 from django.db.models import Count
-from django.db.models.query import QuerySet
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.serializers import BaseSerializer
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
@@ -11,22 +6,17 @@ from rest_framework.mixins import (
     CreateModelMixin,
     RetrieveModelMixin,
     DestroyModelMixin,
-    UpdateModelMixin,
 )
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import (
-    AllowAny,
-    DjangoModelPermissions,
-    DjangoModelPermissionsOrAnonReadOnly,
     IsAdminUser,
     IsAuthenticated,
 )
 from rest_framework.filters import SearchFilter, OrderingFilter
 from store.pagination import DefaultPagination
 from store.permissions import (
-    FullDjangoModelPermissions,
     IsAdminOrReadOnly,
     ViewCustomerHistoryPermission,
 )
