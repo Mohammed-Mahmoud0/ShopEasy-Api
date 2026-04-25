@@ -1,7 +1,9 @@
 from datetime import timedelta
+import importlib.util
 import os
 from pathlib import Path
 from celery.schedules import crontab
+import django_redis
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -15,6 +17,8 @@ SECRET_KEY = "django-insecure-(^k(wfy6le=q@v8z@sh4v0-8*w!kr^vil8$)itx+&zdvhs5hu^
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+
+SILK_INSTALLED = importlib.util.find_spec("silk") is not None
 
 ALLOWED_HOSTS = []
 
@@ -32,7 +36,6 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "djoser",
-    "silk",
     "playground",
     "debug_toolbar",
     "store",
@@ -41,9 +44,12 @@ INSTALLED_APPS = [
     "core",
 ]
 
+if DEBUG and SILK_INSTALLED:
+    INSTALLED_APPS += ["silk"]
+
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
-    # "debug_toolbar.middleware.DebugToolbarMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -53,8 +59,8 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-# if DEBUG:
-#     MIDDLEWARE += ["silk.middleware.SilkyMiddleware"]
+if DEBUG and SILK_INSTALLED:
+    MIDDLEWARE += ["silk.middleware.SilkyMiddleware"]
 
 INTERNAL_IPS = [
     # ...
@@ -180,4 +186,15 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": 5,
         "args": ["Hello, this is a notification from Celery!"],
     }
+}
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://localhost:6379/2",
+        "TIMEOUT": 10 * 60,
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    },
 }
