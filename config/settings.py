@@ -59,8 +59,8 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-if DEBUG and SILK_INSTALLED:
-    MIDDLEWARE += ["silk.middleware.SilkyMiddleware"]
+# if DEBUG and SILK_INSTALLED:
+#     MIDDLEWARE += ["silk.middleware.SilkyMiddleware"]
 
 INTERNAL_IPS = [
     # ...
@@ -104,7 +104,7 @@ DATABASES = {
         "USER": "root",
         "PASSWORD": "0000",
         "PORT": "3306",
-        "CONN_MAX_AGE": int(os.getenv("DB_CONN_MAX_AGE", "60")),
+        "CONN_MAX_AGE": int(os.getenv("DB_CONN_MAX_AGE", "0")),
         "CONN_HEALTH_CHECKS": True,
     }
 }

@@ -1,4 +1,6 @@
 from django.db.models import Count
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.serializers import BaseSerializer
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
@@ -25,6 +27,9 @@ from .models import *
 from .serializers import *
 
 
+CACHE_TTL_SECONDS = 60 * 5
+
+
 class ProductViewSet(ModelViewSet):
     queryset = Product.objects.prefetch_related("images").all()
     serializer_class = ProductSerializer
@@ -35,6 +40,14 @@ class ProductViewSet(ModelViewSet):
     search_fields = ["title", "description"]
     ordering_fields = ["unit_price", "last_update"]
     permission_classes = [IsAdminOrReadOnly]
+
+    @method_decorator(cache_page(CACHE_TTL_SECONDS))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @method_decorator(cache_page(CACHE_TTL_SECONDS))
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
 
     def get_serializer_context(self):
         return {"request": self.request}
@@ -52,6 +65,14 @@ class CollectionViewSet(ModelViewSet):
     queryset = Collection.objects.annotate(products_count=Count("products")).all()
     serializer_class = CollectionSerializer
     permission_classes = [IsAdminOrReadOnly]
+
+    @method_decorator(cache_page(CACHE_TTL_SECONDS))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @method_decorator(cache_page(CACHE_TTL_SECONDS))
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
         if Product.objects.filter(collection_id=kwargs["pk"]).count() > 0:

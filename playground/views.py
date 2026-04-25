@@ -1,14 +1,12 @@
 from django.shortcuts import render
-from django.core.cache import cache
+from django.views.decorators.cache import cache_page
 import requests
 
 # Create your views here.
 
 
+@cache_page(5 * 60)
 def say_hello(request):
-    key = "hello"
-    if cache.get(key) is None:
-        response = requests.get("https://httpbin.org/delay/2")
-        data = response.json()
-        cache.set(key, data)
-    return render(request, "hello.html", {"name": cache.get(key)})
+    response = requests.get("https://httpbin.org/delay/2")
+    data = response.json()
+    return render(request, "hello.html", {"name": data})
