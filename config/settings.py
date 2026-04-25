@@ -98,7 +98,8 @@ DATABASES = {
         "USER": "root",
         "PASSWORD": "0000",
         "PORT": "3306",
-        "CONN_MAX_AGE": 60,
+        "CONN_MAX_AGE": int(os.getenv("DB_CONN_MAX_AGE", "60")),
+        "CONN_HEALTH_CHECKS": True,
     }
 }
 
