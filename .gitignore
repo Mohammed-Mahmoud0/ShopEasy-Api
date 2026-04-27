@@ -40,3 +40,7 @@ Thumbs.db
 
 # Local uploads
 media/
+
+/static/
+
+general.log

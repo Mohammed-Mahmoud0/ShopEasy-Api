@@ -1,12 +1,16 @@
 from django.shortcuts import render
-from django.views.decorators.cache import cache_page
+import logging
 import requests
 
-# Create your views here.
+logger = logging.getLogger(__name__)
 
 
-@cache_page(5 * 60)
 def say_hello(request):
-    response = requests.get("https://httpbin.org/delay/2")
-    data = response.json()
+    try:
+        logger.info("calling httpbin")
+        response = requests.get("https://httpbin.org/delay/2")
+        logger.info("httpbin responded with status code %s", response.status_code)
+        data = response.json()
+    except requests.ConnectionError:
+        logger.critical("httpbin is not responding")
     return render(request, "hello.html", {"name": data})
