@@ -1,6 +1,5 @@
 from rest_framework import status
 import pytest
-from conftest import authenticate
 from store.models import Collection
 from model_bakery import baker
 
@@ -19,14 +18,14 @@ class TestCreateCollection:
         response = create_collection({"title": "a"})
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
-    def test_if_user_is_not_admin_return_403(self, api_client, create_collection):
+    def test_if_user_is_not_admin_return_403(self, create_collection, authenticate):
         authenticate()
 
         response = create_collection({"title": "a"})
 
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
-    def test_if_data_is_invalid_return_400(self, api_client, create_collection):
+    def test_if_data_is_invalid_return_400(self, create_collection, authenticate):
         authenticate(is_staff=True)
 
         response = create_collection({"title": ""})
@@ -34,7 +33,7 @@ class TestCreateCollection:
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.data["title"] is not None
 
-    def test_if_data_is_valid_return_201(self, api_client, create_collection):
+    def test_if_data_is_valid_return_201(self, create_collection, authenticate):
         authenticate(is_staff=True)
 
         response = create_collection({"title": "Valid Title"})

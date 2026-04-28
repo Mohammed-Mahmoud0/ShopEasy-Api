@@ -41,13 +41,13 @@ class ProductViewSet(ModelViewSet):
     ordering_fields = ["unit_price", "last_update"]
     permission_classes = [IsAdminOrReadOnly]
 
-    @method_decorator(cache_page(CACHE_TTL_SECONDS))
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
+    # @method_decorator(cache_page(CACHE_TTL_SECONDS))
+    # def list(self, request, *args, **kwargs):
+    #     return super().list(request, *args, **kwargs)
 
-    @method_decorator(cache_page(CACHE_TTL_SECONDS))
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
+    # @method_decorator(cache_page(CACHE_TTL_SECONDS))
+    # def retrieve(self, request, *args, **kwargs):
+    #     return super().retrieve(request, *args, **kwargs)
 
     def get_serializer_context(self):
         return {"request": self.request}
@@ -66,13 +66,13 @@ class CollectionViewSet(ModelViewSet):
     serializer_class = CollectionSerializer
     permission_classes = [IsAdminOrReadOnly]
 
-    @method_decorator(cache_page(CACHE_TTL_SECONDS))
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
+    # @method_decorator(cache_page(CACHE_TTL_SECONDS))
+    # def list(self, request, *args, **kwargs):
+    #     return super().list(request, *args, **kwargs)
 
-    @method_decorator(cache_page(CACHE_TTL_SECONDS))
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
+    # @method_decorator(cache_page(CACHE_TTL_SECONDS))
+    # def retrieve(self, request, *args, **kwargs):
+    #     return super().retrieve(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
         if Product.objects.filter(collection_id=kwargs["pk"]).count() > 0:
