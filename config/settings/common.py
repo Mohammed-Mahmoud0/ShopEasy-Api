@@ -5,21 +5,10 @@ from pathlib import Path
 from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-(^k(wfy6le=q@v8z@sh4v0-8*w!kr^vil8$)itx+&zdvhs5hu^"
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
 SILK_INSTALLED = importlib.util.find_spec("silk") is not None
-
-ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -35,6 +24,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "djoser",
+    "silk",
     "playground",
     "debug_toolbar",
     "store",
@@ -43,8 +33,6 @@ INSTALLED_APPS = [
     "core",
 ]
 
-if DEBUG and SILK_INSTALLED:
-    INSTALLED_APPS += ["silk"]
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -91,23 +79,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "config.wsgi.application"
-
-
-# Database
-# https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "shopeasy2",
-        "HOST": "localhost",
-        "USER": "root",
-        "PASSWORD": "0000",
-        "PORT": "3306",
-        "CONN_MAX_AGE": int(os.getenv("DB_CONN_MAX_AGE", "0")),
-        "CONN_HEALTH_CHECKS": True,
-    }
-}
 
 
 # Password validation

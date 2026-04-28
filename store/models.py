@@ -3,7 +3,7 @@ from django.db import models
 from django.contrib import admin
 from django.core.validators import MinValueValidator
 from uuid import uuid4
-from config import settings
+from config.settings import common
 from store import permissions
 from store.validators import validate_file_size
 
@@ -82,7 +82,7 @@ class Customer(models.Model):
         max_length=1, choices=MEMBERSHIP_CHOICES, default=MEMBERSHIP_BRONZE
     )
 
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.OneToOneField(common.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
         return f"{self.user.first_name} {self.user.last_name}"
